@@ -6,22 +6,27 @@ The project is setup as a Typescript monorepo with Lerna and Yarn workspaces. Th
 
 <!-- TOC depthFrom:2 -->
 
--   [1. Installation](#1-installation)
-    -   [1.1 Installing Dependencies](#11-installing-dependencies)
-    -   [1.2 Configure Environment](#12-configure-environment)
--   [2. Development](#2-development)
-    -   [2.1 Development Commands](#21-development-commands)
-    -   [2.2 Testing](#22-testing)
--   [3. Deploying to Production](#3-deploying-to-production)
-    -   [3.1 Requirements](#31-requirements)
-    -   [3.2 Production Configuration](#32-production-configuration)
-    -   [3.3 Production Infrastructure](#33-production-infrastructure)
-    -   [3.4 Deploying the Chart](#34-deploying-the-chart)
-    -   [3.5 Final Notes](#35-final-notes)
+-   [1. Demo](#1-demo)
+-   [2. Installation](#2-installation)
+    -   [2.1 Installing Dependencies](#21-installing-dependencies)
+    -   [2.2 Configure Environment](#22-configure-environment)
+-   [3. Development](#3-development)
+    -   [3.1 Development Commands](#31-development-commands)
+    -   [3.2 Testing](#32-testing)
+-   [4. Deploying to Production](#4-deploying-to-production)
+    -   [4.1 Requirements](#41-requirements)
+    -   [4.2 Production Configuration](#42-production-configuration)
+    -   [4.3 Production Infrastructure](#43-production-infrastructure)
+    -   [4.4 Deploying the Chart](#44-deploying-the-chart)
+    -   [4.5 Final Notes](#45-final-notes)
 
 <!-- /TOC -->
 
-## 1. Installation
+## 1. Demo
+
+https://user-images.githubusercontent.com/12851394/143725321-423efc20-11b1-4e8d-a815-49fd2e8d58e5.mp4
+
+## 2. Installation
 
 You will need:
 
@@ -36,7 +41,7 @@ git clone https://github.com/PokimaneSafety/pausemane-stream-overlay.git
 cd pausemane-stream-overlay
 ```
 
-### 1.1 Installing Dependencies
+### 2.1 Installing Dependencies
 
 Next, install the dependencies:
 
@@ -46,7 +51,7 @@ yarn install
 
 Installation hooks will automatically setup git hooks and link packages together. Module hoisting is performed by yarn workspaces at this stage.
 
-### 1.2 Configure Environment
+### 2.2 Configure Environment
 
 Next, configure your environment. You can do so by copying the example environment file.
 
@@ -62,11 +67,11 @@ eval "$EDITOR" .env
 
 Finally, start the app and backend simultaneously by executing the `yarn start` command. You can alternatively run them in docker by executing `yarn start:docker`. If using the docker method local production dependencies are not required but developer dependencies are still needed.
 
-## 2. Development
+## 3. Development
 
 If you wish to contribute to this repository please fork it and make a pull request. If you are a serious contributor I highly recommend running everything in Docker. Hot-reload will work there as volume mounts are provided in the docker-compose file as read-only mounts. Below I will document useful project root commands.
 
-### 2.1 Development Commands
+### 3.1 Development Commands
 
 | Command             | Description                                                                            |
 | ------------------- | -------------------------------------------------------------------------------------- |
@@ -94,15 +99,15 @@ If you wish to contribute to this repository please fork it and make a pull requ
 
 You can edit source code or your .env file and have hot-reloads execute in real time with the local and docker build approaches.
 
-### 2.2 Testing
+### 3.2 Testing
 
 If you wish to run tests you can execute `yarn test:coverage`. If you use VS Code for your IDE you will be recommended a coverage gutters extension which will watch the coverage output and highlight the implementation code with green, yellow or red to build more robust tests. If you plan to contribute tests I recommend running `yarn test:coverage --watch` to make your life easier.
 
-## 3. Deploying to Production
+## 4. Deploying to Production
 
 To deploy to production you should fork this repository and configure your own GitHub secrets if you wish to have automated CI/CD. Otherwise you can manually push your Docker images and invalidate the Cloudflare cache through their REST API or Web UI.
 
-### 3.1 Requirements
+### 4.1 Requirements
 
 If you wish to deploy this yourself, you should install:
 
@@ -111,18 +116,18 @@ If you wish to deploy this yourself, you should install:
 -   `helmfile`
 -   `kubectl`
 
-### 3.2 Production Configuration
+### 4.2 Production Configuration
 
 First you should create `terraform.tfvars` files in the [**`app`**](./packages/app) and [**`service`**](./packages/service) terraform directories to define their respective variables defined in the `variables.tf` file.
 
-### 3.3 Production Infrastructure
+### 4.3 Production Infrastructure
 
 Next, you should execute `yarn tf:plan` to review the resources terraform will generate. If you are happy with it you should execute `yarn tf:apply`. This will take a few moments but will generate the resources required to store the service docker image and hold the static build output produced by the app.
 
-### 3.4 Deploying the Chart
+### 4.4 Deploying the Chart
 
 Next, you will need to retrieve the context for your Kubernetes cluster. Once you have this you can deploy the chart by executing `helmfile apply`. It is recommended you install the helmfile diff plugin for updating manifests as this repository grows.
 
-### 3.5 Final Notes
+### 4.5 Final Notes
 
 This is a brief deployment introduction with a minor audience - more details will be added in the future.
