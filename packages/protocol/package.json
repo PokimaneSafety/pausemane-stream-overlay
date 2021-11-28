@@ -1,0 +1,43 @@
+{
+    "name": "@pokimane-safety/protocol",
+    "version": "1.0.0",
+    "description": "A library which contains shared websocket protocol.",
+    "type": "commonjs",
+    "main": "build/src/index.js",
+    "types": "build/src/index.d.ts",
+    "engines": {
+        "node": ">= 16.12.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/PokimaneSafety/pausemane-stream-overlay.git",
+        "directory": "packages/protocol"
+    },
+    "bugs": {
+        "url": "https://github.com/PokimaneSafety/pausemane-stream-overlay/issues"
+    },
+    "license": "GPL-3.0-or-later",
+    "scripts": {
+        "build": "tsc -b tsconfig.build.json",
+        "typecheck": "tsc -p tsconfig.json --noEmit",
+        "clean": "tsc -b tsconfig.build.json --clean",
+        "postclean": "rimraf build coverage",
+        "lint": "eslint './**/*.{js,ts}' --ignore-path=../../.eslintignore",
+        "lint:fix": "yarn lint --fix",
+        "format": "prettier --list-different './**/*.{js,ts,json,md,yaml}' --ignore-path ../../.prettierignore",
+        "format:fix": "prettier --write './**/*.{js,ts,json,md,yaml}' --ignore-path ../../.prettierignore",
+        "spelling": "cspell --no-must-find-files --config=../../.cspell.json './**/*.{js,ts,md}'",
+        "test": "jest -c .jestrc.js --verbose --passWithNoTests",
+        "test:watch": "yarn test --watchAll --verbose=false",
+        "test:coverage": "yarn test --coverage",
+        "test:coverage:watch": "yarn test:coverage  --watchAll --verbose=false"
+    },
+    "devDependencies": {
+        "@types/jest": "^27.0.3",
+        "@types/node": "^16.11.10",
+        "jest": "^27.3.1",
+        "ts-jest": "^27",
+        "ts-node": "^10.4.0",
+        "typescript": "^4.5.2"
+    }
+}

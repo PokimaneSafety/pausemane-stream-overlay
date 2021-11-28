@@ -1,0 +1,10 @@
+missingFileHandler: Error
+
+releases:
+    - name: pausemane-stream-overlay
+      namespace: pokimane-safety
+      createNamespace: true
+      chart: ./chart
+      values:
+          - AWS_ACCOUNT_ID: '{{ exec "./scripts/terraform-output.sh" (list "aws_account_id") }}'
+          - AWS_REGION: '{{ requiredEnv "AWS_REGION" }}'

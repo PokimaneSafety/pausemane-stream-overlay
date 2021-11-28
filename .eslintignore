@@ -1,0 +1,8 @@
+!*.js
+**/node_modules/**
+**/build/**
+**/coverage/**
+**/terraform/.terraform/**
+**/migrations/**/*.ts
+**/*.nofmt.yaml
+**/temp

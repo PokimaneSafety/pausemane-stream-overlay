@@ -1,0 +1,16 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "rootDir": ".",
+        "incremental": true,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "baseUrl": ".",
+        "paths": {},
+        "allowJs": true
+    },
+    "include": ["./src/**/*", "./package.json"],
+    "exclude": ["./src/**/*.spec.ts"]
+}

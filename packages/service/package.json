@@ -1,0 +1,85 @@
+{
+    "name": "@pokimane-safety/service",
+    "version": "1.0.0",
+    "description": "A service to store the quantity of times pokimane has paused content while reacting.",
+    "type": "commonjs",
+    "main": "build/src/index.js",
+    "types": "build/src/index.d.ts",
+    "engines": {
+        "node": ">= 16.12.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/PokimaneSafety/pausemane-stream-overlay.git",
+        "directory": "packages/service"
+    },
+    "bugs": {
+        "url": "https://github.com/PokimaneSafety/pausemane-stream-overlay/issues"
+    },
+    "license": "GPL-3.0-or-later",
+    "scripts": {
+        "start": "./scripts/start.js",
+        "start:watch": "./scripts/start.js --watch",
+        "start:docker": "./scripts/start-docker.js",
+        "build": "tsc -b tsconfig.build.json",
+        "build:docker": "docker-compose build pausemane-stream-overlay-service",
+        "typecheck": "tsc -p tsconfig.json --noEmit",
+        "clean": "tsc -b tsconfig.build.json --clean",
+        "postclean": "rimraf build coverage",
+        "lint": "eslint './**/*.{js,ts}' --ignore-path=../../.eslintignore",
+        "lint:fix": "yarn lint --fix",
+        "format": "prettier --list-different './**/*.{js,ts,json,md,yaml}' --ignore-path ../../.prettierignore",
+        "format:fix": "prettier --write './**/*.{js,ts,json,md,yaml}' --ignore-path ../../.prettierignore",
+        "spelling": "cspell --no-must-find-files --config=../../.cspell.json './**/*.{js,ts,md}'",
+        "test": "jest -c .jestrc.js --verbose --passWithNoTests",
+        "test:watch": "yarn test --watchAll --verbose=false",
+        "test:coverage": "yarn test --coverage",
+        "test:coverage:watch": "yarn test:coverage  --watchAll --verbose=false",
+        "orm": "mikro-orm"
+    },
+    "mikro-orm": {
+        "useTsNode": true,
+        "configPaths": [
+            "./src/database/orm/cli.ts"
+        ]
+    },
+    "dependencies": {
+        "@mikro-orm/core": "^4.5.9",
+        "@mikro-orm/migrations": "^4.5.9",
+        "@mikro-orm/postgresql": "^4.5.9",
+        "@mikro-orm/reflection": "^4.5.9",
+        "@mikro-orm/sql-highlighter": "^1.0.1",
+        "bufferutil": "^4.0.5",
+        "dank-twitch-irc": "^4.3.0",
+        "fastify": "^3.24.0",
+        "fastify-metrics": "^8.0.0",
+        "got": "^11.8.3",
+        "make-error-cause": "^2.3.0",
+        "pg": "^8.7.1",
+        "prom-client": "^14.0.1",
+        "tslib": "^2.3.1",
+        "under-pressure": "^5.8.0",
+        "utf-8-validate": "^5.0.7",
+        "ws": "^8.3.0",
+        "zlib-sync": "^0.1.7",
+        "@pokimane-safety/protocol": "^1.0.0"
+    },
+    "devDependencies": {
+        "@mikro-orm/cli": "^4.5.9",
+        "@types/jest": "^27.0.3",
+        "@types/node": "^16.11.10",
+        "@types/pg": "^8.6.1",
+        "@types/source-map-support": "^0.5.4",
+        "@types/ws": "^8.2.0",
+        "commander": "^8.3.0",
+        "dotenv": "^10.0.0",
+        "dotenv-expand": "^5.1.0",
+        "jest": "^27.3.1",
+        "ts-essentials": "^9.0.0",
+        "ts-jest": "^27",
+        "ts-node": "^10.4.0",
+        "ts-node-dev": "^1.1.8",
+        "typescript": "^4.5.2",
+        "yaml": "^1.10.2"
+    }
+}

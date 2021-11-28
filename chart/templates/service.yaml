@@ -1,0 +1,23 @@
+kind: Service
+apiVersion: v1
+metadata:
+    name: pausemane-stream-overlay
+    labels:
+        app: pausemane-stream-overlay
+
+spec:
+    selector:
+        app: pausemane-stream-overlay
+
+    ports:
+        - name: websocket
+          port: 8080
+          targetPort: websocket
+
+        - name: health
+          port: 4141
+          targetPort: health
+
+        - name: metrics
+          port: 9090
+          targetPort: metrics

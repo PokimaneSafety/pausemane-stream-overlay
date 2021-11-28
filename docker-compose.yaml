@@ -1,0 +1,134 @@
+version: '3.7'
+
+volumes:
+    postgres:
+
+networks:
+    postgres:
+
+services:
+    postgres:
+        image: postgres:12.4-alpine
+        hostname: postgres
+        volumes:
+            - postgres:/var/lib/postgresql/data
+        ports:
+            - '5432:5432'
+        environment:
+            POSTGRES_USER: pokimane-safety
+            POSTGRES_PASSWORD: pokimane-safety
+        healthcheck:
+            test: pg_isready -U pokimane-safety
+            interval: 1s
+            timeout: 1s
+            retries: 30
+        networks:
+            - postgres
+
+    pausemane-stream-overlay-app:
+        image: pokimane-safety/pausemane-stream-overlay-app:latest
+        tty: false
+        build:
+            context: .
+            dockerfile: packages/app/Dockerfile
+        volumes:
+            # Root
+            - ./package.json:/usr/pokimane-safety/package.json:ro
+            - ./yarn.lock:/usr/pokimane-safety/yarn.lock:ro
+            - ./.env:/usr/pokimane-safety/.env:ro
+            # App
+            - ./packages/app/config:/usr/pokimane-safety/packages/app/config:ro
+            - ./packages/app/public:/usr/pokimane-safety/packages/app/public:ro
+            - ./packages/app/scripts:/usr/pokimane-safety/packages/app/scripts:ro
+            - ./packages/app/src:/usr/pokimane-safety/packages/app/src:ro
+            - ./packages/app/package.json:/usr/pokimane-safety/packages/app/package.json:ro
+            - ./packages/app/tsconfig.json:/usr/pokimane-safety/packages/app/tsconfig.json:ro
+            # Protocol
+            - ./packages/protocol/src:/usr/pokimane-safety/packages/protocol/src:ro
+            - ./packages/protocol/package.json:/usr/pokimane-safety/packages/protocol/package.json:ro
+            - ./packages/protocol/tsconfig.json:/usr/pokimane-safety/packages/protocol/tsconfig.json:ro
+            - ./packages/protocol/tsconfig.build.json:/usr/pokimane-safety/packages/protocol/tsconfig.build.json:ro
+        ports:
+            - '3000:3000' # Webpack Dev Server
+        environment:
+            HOST: 0.0.0.0
+            PORT: 3000
+        healthcheck:
+            test: curl -f http://localhost:8080/
+            interval: 1s
+            timeout: 1s
+            retries: 30
+            start_period: 15s
+
+    pausemane-stream-overlay-service:
+        image: pokimane-safety/pausemane-stream-overlay:latest
+        hostname: pausemane-stream-overlay
+        tty: true
+        build:
+            context: .
+            dockerfile: packages/service/Dockerfile
+            target: development
+        command: './docker-dev-entry.sh'
+        volumes:
+            # Root
+            - ./package.json:/usr/pokimane-safety/package.json:ro
+            - ./yarn.lock:/usr/pokimane-safety/yarn.lock:ro
+            - ./.env:/usr/pokimane-safety/.env:ro
+            # Service
+            - ./packages/service/scripts:/usr/pokimane-safety/packages/service/scripts:ro
+            - ./packages/service/src:/usr/pokimane-safety/packages/service/src:ro
+            - ./packages/service/package.json:/usr/pokimane-safety/packages/service/package.json:ro
+            - ./packages/service/tsconfig.json:/usr/pokimane-safety/packages/service/tsconfig.json:ro
+            - ./packages/service/tsconfig.build.json:/usr/pokimane-safety/packages/service/tsconfig.build.json:ro
+            # Protocol
+            - ./packages/protocol/src:/usr/pokimane-safety/packages/protocol/src:ro
+            - ./packages/protocol/package.json:/usr/pokimane-safety/packages/protocol/package.json:ro
+            - ./packages/protocol/tsconfig.json:/usr/pokimane-safety/packages/protocol/tsconfig.json:ro
+            - ./packages/protocol/tsconfig.build.json:/usr/pokimane-safety/packages/protocol/tsconfig.build.json:ro
+        depends_on:
+            - postgres
+        ports:
+            - '8080:8080' # WebSocket
+            - '9090:9090' # Metrics
+            - '4141:4141' # Health
+        environment:
+            POSTGRESQL_DATABASE: pausemane-stream-overlay
+            POSTGRESQL_HOST: postgres
+            POSTGRESQL_PORT: 5432
+            POSTGRESQL_USER: pokimane-safety
+            POSTGRESQL_PASSWORD: pokimane-safety
+        networks:
+            - postgres
+        healthcheck:
+            test: curl -f http://localhost:4141/healthz
+            interval: 1s
+            timeout: 1s
+            retries: 30
+            start_period: 15s
+
+    pausemane-stream-overlay-service-prod:
+        image: pokimane-safety/pausemane-stream-overlay-prod:latest
+        build:
+            context: .
+            dockerfile: packages/service/Dockerfile
+        depends_on:
+            - postgres
+        ports:
+            - '8080:8080' # WebSocket
+            - '9090:9090' # Metrics
+            - '4141:4141' # Health
+        env_file: .env
+        environment:
+            POSTGRESQL_DATABASE: pausemane-stream-overlay
+            POSTGRESQL_HOST: postgres
+            POSTGRESQL_PORT: 5432
+            POSTGRESQL_USER: pokimane-safety
+            POSTGRESQL_PASSWORD: pokimane-safety
+        networks:
+            - postgres
+        healthcheck:
+            test: curl -f http://localhost:4141/healthz
+            interval: 1s
+            timeout: 1s
+            retries: 30
+            start_period: 15s

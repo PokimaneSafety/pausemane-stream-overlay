@@ -1,0 +1,15 @@
+@import '~font-proxima-nova-scss/font-proxima-nova-scss';
+@import './variables.scss';
+
+* {
+    font-family: 'Proxima Nova';
+}
+
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
+    background-color: unset !important;
+    overflow: hidden;
+}

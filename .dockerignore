@@ -1,0 +1,10 @@
+**/node_modules
+**/build
+**/coverage
+**/terraform
+**/temp
+chart
+.vscode
+.husky
+.github
+.git

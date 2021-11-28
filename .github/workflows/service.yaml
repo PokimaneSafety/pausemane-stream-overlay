@@ -1,0 +1,142 @@
+name: service
+on:
+    push:
+        branches:
+            - main
+        paths:
+            # Package
+            - packages/service/**/*
+            # Workflow
+            - .github/workflows/service.yaml
+            # Docker
+            - .dockerignore
+    pull_request:
+        paths:
+            # Package
+            - packages/service/**/*
+            # Workflow
+            - .github/workflows/service.yaml
+            # Docker
+            - .dockerignore
+
+env:
+    DOCKERFILE_PATH: './packages/service/Dockerfile'
+    DOCKER_IMAGE: 'pokimane-safety/pausemane-stream-overlay'
+    BUILD_CACHE: /home/runner/.docker/buildkit
+
+jobs:
+    build:
+        runs-on: ubuntu-20.04
+        steps:
+            - name: Checkout Latest Commit
+              uses: actions/checkout@v2
+              with:
+                  submodules: recursive
+                  fetch-depth: 2
+
+            - name: Download Docker Build Cache
+              uses: actions/cache@v2
+              with:
+                  key: ${{ runner.os }}-${{ hashFiles('Dockerfile') }}
+                  path: ${{ env.BUILD_CACHE }}
+
+            - name: Build Docker (Development Target)
+              run: |
+                  if [ $GITHUB_BASE_REF ]; then
+                      # Pull Request
+                      export TITLE="${{ github.event.pull_request.title }}"
+                  else
+                      # Push
+                      export TITLE="${{ github.event.head_commit.message }}"
+                  fi
+
+                  docker buildx create --use
+                  docker buildx build . \
+                      -f ${DOCKERFILE_PATH} \
+                      -t ${DOCKER_IMAGE}-development \
+                      --target development \
+                      --build-arg GIT_COMMIT_SHA="$(git show -s --format=%H HEAD)" \
+                      --build-arg GIT_COMMIT_AUTHOR="$(git show -s --format=%an HEAD)" \
+                      --build-arg GIT_COMMIT_DATE="$(git show -s --format=%cI)" \
+                      --build-arg GIT_COMMIT_TITLE="${TITLE}" \
+                      --cache-to type=local,dest=${BUILD_CACHE},mode=max \
+                      --cache-from type=local,src=${BUILD_CACHE} \
+                      --output=type=docker
+
+            - name: Run Typecheck
+              run: |
+                  docker run \
+                    --entrypoint "/bin/bash" \
+                    ${DOCKER_IMAGE}-development \
+                    -c 'yarn workspace @pokimane-safety/service build && yarn workspace @pokimane-safety/service typecheck'
+
+            - name: Run Linting
+              run: |
+                  docker run \
+                    --entrypoint "/bin/bash" \
+                    ${DOCKER_IMAGE}-development \
+                    -c 'yarn workspace @pokimane-safety/service build && yarn workspace @pokimane-safety/service lint'
+
+            - name: Run Tests
+              run: |
+                  docker run \
+                    --entrypoint "/bin/bash" \
+                    ${DOCKER_IMAGE}-development \
+                    -c 'yarn workspace @pokimane-safety/service build && yarn workspace @pokimane-safety/service test'
+
+            - name: Build Docker (Production Target)
+              run: |
+                  if [ $GITHUB_BASE_REF ]; then
+                      # Pull Request
+                      export TITLE="${{ github.event.pull_request.title }}"
+                  else
+                      # Push
+                      export TITLE="${{ github.event.head_commit.message }}"
+                  fi
+
+                  docker buildx build . \
+                      -f ${DOCKERFILE_PATH} \
+                      -t ${DOCKER_IMAGE} \
+                      --build-arg GIT_COMMIT_SHA="$(git show -s --format=%H HEAD)" \
+                      --build-arg GIT_COMMIT_AUTHOR="$(git show -s --format=%an HEAD)" \
+                      --build-arg GIT_COMMIT_DATE="$(git show -s --format=%cI)" \
+                      --build-arg GIT_COMMIT_TITLE="${TITLE}" \
+                      --cache-to type=local,dest=${BUILD_CACHE},mode=max \
+                      --cache-from type=local,src=${BUILD_CACHE} \
+                      --output=type=docker
+
+            - name: Configure AWS Credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              if: github.ref == 'refs/heads/main'
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ secrets.AWS_REGION }}
+
+            - name: Login to AWS ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1
+              if: github.ref == 'refs/heads/main'
+
+            - name: Push Docker Image
+              if: github.ref == 'refs/heads/main'
+              run: |
+                  docker tag ${DOCKER_IMAGE} ${{ steps.login-ecr.outputs.registry }}/${DOCKER_IMAGE}:latest
+                  docker tag ${DOCKER_IMAGE} ${{ steps.login-ecr.outputs.registry }}/${DOCKER_IMAGE}:${{ github.sha }}
+                  docker image push --all-tags ${{ steps.login-ecr.outputs.registry }}/${DOCKER_IMAGE}
+
+            - name: Setup Kubectl
+              uses: azure/setup-kubectl@v1
+              if: github.ref == 'refs/heads/main'
+
+            - name: Get Kube Config
+              run: aws eks update-kubeconfig --name moderatex
+              if: github.ref == 'refs/heads/main'
+
+            - name: Rollout Restart
+              run: kubectl rollout restart -n pokimane-safety deployments/pausemane-stream-overlay
+              if: github.ref == 'refs/heads/main'
+
+            - name: Verify Rollout Status
+              run: kubectl rollout status -n pokimane-safety deployments/pausemane-stream-overlay
+              if: github.ref == 'refs/heads/main'

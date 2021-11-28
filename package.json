@@ -1,0 +1,64 @@
+{
+    "name": "@pokimane-safety/pausemane-stream-overlay",
+    "description": "A streaming overlay that tracks the amount of times paused while watching a video.",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "contributors": [
+        "Lewis Gibson <lewis-gibson@hotmail.com>"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/PokimaneSafety/pausemane-stream-overlay.git"
+    },
+    "bugs": {
+        "url": "https://github.com/PokimaneSafety/pausemane-stream-overlay/issues"
+    },
+    "license": "GPL-3.0-or-later",
+    "scripts": {
+        "addlocal": "./scripts/add-local.sh",
+        "ws": "./scripts/workspace.sh",
+        "start": "./scripts/start.sh",
+        "start:docker": "./scripts/start-docker.js",
+        "build": "lerna run build",
+        "build:docker": "lerna run build:docker",
+        "typecheck": "lerna run clean",
+        "clean": "lerna clean --yes && lerna run clean && find . -type f \\( -name 'yarn-error.log' -o -name '.eslintcache' \\) ! -path '**/node_modules/*' -delete",
+        "lint": "eslint --ext js && lerna run lint",
+        "lint:fix": "eslint --ext js --fix && lerna run lint:fix",
+        "format": "prettier --list-different '*.{js,json,md,yaml}' && lerna run format",
+        "format:fix": "prettier --write '*.{js,ts,json,md,yaml}' && lerna run format:fix",
+        "spelling": "cspell --no-must-find-files --config=.cspell.json *.md && lerna run spelling",
+        "test": "lerna run test",
+        "test:coverage": "lerna run test:coverage",
+        "chart:lint": "helmfile lint",
+        "chart:render": "helmfile template | yq eval -P",
+        "tf:plan": "TF_INPUT=false terragrunt plan-all",
+        "tf:apply": "TF_INPUT=false terragrunt apply-all",
+        "tf:output": "TF_INPUT=false terragrunt output-all",
+        "tf:destroy": "TF_INPUT=false terragrunt destroy-all",
+        "prepare": "husky install || exit 0",
+        "postinstall": "test -n \"$NO_POST_INSTALL\" || lerna link"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.4.0",
+        "@typescript-eslint/parser": "^5.4.0",
+        "cspell": "^5.13.1",
+        "eslint": "^8.3.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-eslint-comments": "^3.2.0",
+        "eslint-plugin-eslint-plugin": "^4.0.2",
+        "eslint-plugin-import": "^2.25.3",
+        "eslint-plugin-jest": "^25.3.0",
+        "eslint-plugin-optimize-regex": "^1.2.1",
+        "eslint-plugin-prettier": "^4.0.0",
+        "eslint-plugin-simple-import-sort": "^7.0.0",
+        "eslint-plugin-sort-keys-fix": "^1.1.2",
+        "husky": "^7.0.4",
+        "lerna": "^4.0.0",
+        "lint-staged": "^12.1.2",
+        "prettier": "^2.5.0",
+        "postinstall-postinstall": "^2.1.0"
+    }
+}

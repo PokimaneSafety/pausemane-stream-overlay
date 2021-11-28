@@ -1,0 +1,4 @@
+apiVersion: v2
+name: pausemane-stream-overlay
+description: A service to store the quantity of times pokimane has paused content while reacting.
+version: 1.0.0
