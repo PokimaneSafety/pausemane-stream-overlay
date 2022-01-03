@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "A library which contains shared websocket protocol.",
     "type": "commonjs",
-    "main": "build/src/index.js",
+    "main": "src/index.js",
     "types": "build/src/index.d.ts",
     "engines": {
         "node": ">= 16.12.0"
