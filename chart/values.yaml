@@ -1,0 +1,26 @@
+env:
+    POSTGRESQL_DATABASE: '/pausemane-stream-overlay/postgresql/database'
+    POSTGRESQL_HOST: '/pausemane-stream-overlay/postgresql/host'
+    POSTGRESQL_PORT: '/pausemane-stream-overlay/postgresql/port'
+    POSTGRESQL_USER: '/pausemane-stream-overlay/postgresql/user'
+    POSTGRESQL_PASSWORD: '/pausemane-stream-overlay/postgresql/password'
+
+    WEBSOCKET_HOST: '/pausemane-stream-overlay/websocket/host'
+    #  WEBSOCKET_PORT: '/pausemane-stream-overlay/websocket/port'
+    WEBSOCKET_PATH: '/pausemane-stream-overlay/websocket/path'
+    #  WEBSOCKET_TRUST: '/pausemane-stream-overlay/websocket/trust_proxy'
+
+    HEALTH_HOST: '/pausemane-stream-overlay/health/host'
+    #  HEALTH_PORT: '/pausemane-stream-overlay/health/port'
+    #  HEALTH_PATH: '/pausemane-stream-overlay/health/path'
+    #  HEALTH_TRUST: '/pausemane-stream-overlay/health/trust_proxy'
+    #  HEALTH_UPTIME: '/pausemane-stream-overlay/health/uptime'
+
+    METRICS_HOST: '/pausemane-stream-overlay/metrics/host'
+    #  METRICS_PORT: '/pausemane-stream-overlay/metrics/port'
+    #  METRICS_PATH: '/pausemane-stream-overlay/metrics/path'
+    #  METRICS_TRUST: '/pausemane-stream-overlay/metrics/trust_proxy'
+
+    TWITCH_USER: '/pausemane-stream-overlay/twitch/user'
+    TWITCH_TOKEN: '/pausemane-stream-overlay/twitch/token'
+    TWITCH_ROOM: '/pausemane-stream-overlay/twitch/room'
