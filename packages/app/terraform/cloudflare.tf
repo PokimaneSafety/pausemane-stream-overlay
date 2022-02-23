@@ -6,12 +6,3 @@ resource "cloudflare_record" "website" {
   ttl     = 1
   proxied = true
 }
-
-resource "cloudflare_record" "websocket" {
-  zone_id = var.cloudflare_zone_id
-  name    = "pausemane-ws.pokijam.com"
-  value   = var.backend_host
-  type    = "CNAME"
-  ttl     = 1
-  proxied = false
-}
