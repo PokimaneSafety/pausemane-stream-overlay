@@ -10,6 +10,9 @@ on:
             - .github/workflows/service.yaml
             # Docker
             - .dockerignore
+            # Dependencies
+            - yarn.lock
+            - .yarnclean
     pull_request:
         paths:
             # Package
@@ -18,6 +21,9 @@ on:
             - .github/workflows/service.yaml
             # Docker
             - .dockerignore
+            # Dependencies
+            - yarn.lock
+            - .yarnclean
 
 env:
     DOCKERFILE_PATH: './packages/service/Dockerfile'
