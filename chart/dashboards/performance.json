@@ -867,14 +867,14 @@
     "templating": {
         "list": [
             {
-                "allValue": ".*",
+                "allValue": "",
                 "current": {
                     "selected": true,
                     "text": ["All"],
                     "value": ["$__all"]
                 },
                 "datasource": "Prometheus",
-                "definition": "label_values(nodejs_version_info, pod)",
+                "definition": "label_values(nodejs_version_info{job=\"pausemane-stream-overlay\"}, pod)",
                 "error": null,
                 "hide": 0,
                 "includeAll": true,
@@ -882,7 +882,7 @@
                 "multi": true,
                 "name": "pod",
                 "options": [],
-                "query": "label_values(nodejs_version_info, pod)",
+                "query": "label_values(nodejs_version_info{job=\"pausemane-stream-overlay\"}, pod)",
                 "refresh": 1,
                 "regex": "",
                 "skipUrlSync": false,
@@ -905,6 +905,6 @@
     },
     "timezone": "",
     "title": "Performance",
-    "uid": "Tr7gnJoMk",
-    "version": 3
+    "uid": "9xFUpTanS",
+    "version": 1
 }

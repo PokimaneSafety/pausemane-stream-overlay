@@ -8,12 +8,18 @@ on:
             - packages/app/**/*
             # Workflow
             - .github/workflows/app.yaml
+            # Dependencies
+            - yarn.lock
+            - .yarnclean
     pull_request:
         paths:
             # Package
             - packages/app/**/*
             # Workflow
             - .github/workflows/app.yaml
+            # Dependencies
+            - yarn.lock
+            - .yarnclean
 jobs:
     formatting:
         runs-on: ubuntu-latest
