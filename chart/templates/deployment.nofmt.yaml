@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: pausemane-stream-overlay
+    labels:
+        app: pausemane-stream-overlay
+
+spec:
+    selector:
+        matchLabels:
+            app: pausemane-stream-overlay
+
+    template:
+        metadata:
+            labels:
+                app: pausemane-stream-overlay
+
+        spec:
+            containers:
+                - name: pausemane-stream-overlay
+                  image: '{{ .Values.AWS_ACCOUNT_ID }}.dkr.ecr.{{ .Values.AWS_REGION }}.amazonaws.com/pokimane-safety/pausemane-stream-overlay:latest'
+                  ports:
+                      - name: websocket
+                        containerPort: 8080
+
+                      - name: health
+                        containerPort: 4141
+
+                      - name: metrics
+                        containerPort: 9090
+
+                  livenessProbe:
+                      tcpSocket:
+                          port: health
+                      initialDelaySeconds: 30
+                      periodSeconds: 5
+
+                  readinessProbe:
+                      httpGet:
+                          path: /healthz
+                          port: health
+                      initialDelaySeconds: 30
+                      periodSeconds: 5
+
+                  resources:
+                      requests:
+                          memory: 500Mi
+                          cpu: 0.5
+                      limits:
+                          memory: 500Mi
+                          cpu: 0.5
+
+                  env:
+                      {{- range $envName := keys .Values.env }}
+                      - name: {{ $envName }}
+                        valueFrom:
+                            secretKeyRef:
+                                key: {{ $envName }}
+                                name: pausemane-stream-overlay
+                                optional: true
+                      {{- end }}
