@@ -53,7 +53,7 @@
         "dank-twitch-irc": "^4.3.0",
         "fastify": "^3.24.0",
         "fastify-metrics": "^8.0.0",
-        "got": "^11.8.3",
+        "got": "^12.1.0",
         "make-error-cause": "^2.3.0",
         "pg": "^8.7.1",
         "prom-client": "^14.0.1",
